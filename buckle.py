@@ -7,6 +7,9 @@ pd.options.mode.chained_assignment = None  # default='warn'
 import matplotlib.pyplot as plt
 
 from bb_lib import *
+
+# Go to BB_LIB.PY and make sure your tube ID and info is filled into the dictionary
+# should be around like 315, dictionary name is break_dic.
 # ==============================================================
 #Iterate through Parent Directory
 #Generates Dictionary with Batches as Key, Filepaths as values
@@ -24,7 +27,7 @@ item_dic = {'Properties\Sample': ["Mandrel Diameter[m]",
                         "Span[m]",
                         "Failure Span Location[m]",
                         "Post Buckled Displacement[m]",
-                        "Load at Failure[lbs]",
+                        "Load at Failure[N]",
                         "Outside Radius[m]",
                         "Inside Radius[m]",
                         "Cross Sectional Area[m^2]",
@@ -124,7 +127,7 @@ for iname,files in enumerate(pathcsv):
 
         # this is not the real value#
     # INITIAL AND FINAL POSITION
-    buckle_initial = z[0]
+    buckle_initial = round(z[0],6)
     buckle_final = z[len(z)-1]
 
 
@@ -149,11 +152,15 @@ for iname,files in enumerate(pathcsv):
     print("Initial Time: ",initial_time)
     print("Final Time: ",final_time)
 
-    rate_change = (buckle_final-buckle_initial)/(final_time-initial_time)
+    #post buckling displacement 
+    rate_change = (buckle_final-buckle_initial)
+
+    print("Initial Position: ",z[0])
+    print("Final Position: ",z[len(z)-1])
 
     print("Initial Load: " ,load_initial)
     print("Final Load: ",load_final)
-    
+    print("Post Buckling Displacement: ",rate_change*0.0254)
     span_Var = float(break_dic[graphTitle[iname]][0])
     p_e = peak_eccentricity((float(buckle_final)-buckle_initial)*.0254,span_Var)
     eal = eccentricity_fail_location(p_e,float(break_dic[graphTitle[iname]][1]),span_Var)
@@ -163,7 +170,7 @@ for iname,files in enumerate(pathcsv):
     plfs = (a_s + b_s)/1000000
 
     property_list = [str(round(mandrel_Diameter,decimal_places)),str(round(laminate_Thickness,decimal_places)),str(span_Var),str(round(break_dic[graphTitle[iname]][1],decimal_places)),
-                    str(round(rate_change,decimal_places)),str(round(load_final,decimal_places)),str(round(outside_radius,decimal_places)),str(round(inside_radius,decimal_places)),str(round(cross_sectional_area,decimal_places)),str('{:.5e}'.format(moment_area)),
+                    str(round(rate_change*0.0254,decimal_places)),str(round(load_final*4.4482,decimal_places)),str(round(outside_radius,decimal_places)),str(round(inside_radius,decimal_places)),str(round(cross_sectional_area,decimal_places)),str('{:.5e}'.format(moment_area)),
                     str(round(p_e,decimal_places)),str(round(eal,decimal_places)),str(round(a_s,5)),str(round(b_m,decimal_places)),str(round(b_s,5)),str(round(plfs,decimal_places))]
    
     #property_list.append(10)
@@ -251,7 +258,7 @@ for index, figure in enumerate(bytes_list):
     pdf.image(name='data://image/png;base64,' + base64.b64encode(figure.getvalue()).decode()  , x =20 , w=170, h=120, type='png')
 
 
-pdf.output('MT061_Batch_1.pdf')
+pdf.output('MT061_Batch_4.pdf')
 
 # Need to create obejct as pdf
 print(item_dic)

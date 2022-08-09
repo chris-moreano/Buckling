@@ -298,7 +298,7 @@ def get_property_names():
                         "Span[m]",
                         "Failure Span Location[m]",
                         "Post Buckled Displacement[m]",
-                        "Load at Failure[lbs]",
+                        "Load at Failure[N]",
                         "Outside Radius[m]",
                         "Inside Radius[m]",
                         "Cross Sectional Area[m^2]",
